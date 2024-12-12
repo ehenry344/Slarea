@@ -1,5 +1,11 @@
 --!strict
 
-local SlareaEngine = {}
+local RunService = game:GetService("RunService")
 
-return SlareaEngine
+if RunService:IsServer() then
+	return require(script.Server)
+else
+	return require(script.Client) 
+end
+
+
