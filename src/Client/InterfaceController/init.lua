@@ -6,30 +6,41 @@ local Types = require(script.Types)
 local PlayerService = game:GetService("Players")
 -- // Modules // 
 local SlareaFrame = require(script.Frame)
+local LinePlot = require(script.Frame.Plots.LinePlot)
 
 local SlareaInterface = {}
 
-function SlareaInterface.init()
-	SlareaInterface._objects = {}
-	
-	SlareaInterface._objects.screenGui = Instance.new("ScreenGui")
-	
-	SlareaInterface._objects.screenGui.Name = "slareaInterface"
-	SlareaInterface._objects.screenGui.Parent = PlayerService.LocalPlayer.PlayerGui
-	
-	SlareaInterface._objects.frames = {} :: {Types.SlareaFrame}
-end
+-- create the screengui that everything is mounted onto
 
-function SlareaInterface.addFrame(): Types.SlareaFrame
-	local newFrameId = #SlareaInterface._objects.frames
+local screenGui = Instance.new("ScreenGui")
+
+screenGui.Name = "slareaGUI"
+screenGui.Parent = PlayerService.LocalPlayer.PlayerGui
+
+-- holds onto the frames and stuff
+
+local frames: {[string]: Types.SlareaFrame} = {}
+
+function SlareaInterface.CreateProbeOutput(probeName: string)
+	local probeFrame = SlareaFrame.new(probeName, screenGui)
+	local probePlot = LinePlot.new()
 	
-	local newFrame = SlareaFrame.new(newFrameId)
+	probeFrame:AddPlot(probePlot)
 	
-	table.insert(SlareaInterface._objects.frames, newFrame)
+	frames[probeName] = probeFrame
 	
-	newFrame:Mount(SlareaInterface._objects.screenGui)
-	
-	return newFrame
+	return function(data)
+		local plotData: {Vector2} = {}
+		
+		print("RUNNING")
+		
+
+		for i,v in ipairs(data) do
+			table.insert(plotData, Vector2.new(v.timestamp, v.data))
+		end
+
+		probePlot:PlotData(plotData)
+	end
 end
 
 return SlareaInterface
