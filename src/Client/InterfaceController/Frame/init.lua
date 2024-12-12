@@ -6,40 +6,44 @@
 local Types = require(script.Parent.Types)
 
 -- // Config //
-local FrameConfig = require(script.Parent.Parent.Config).Interface.Defaults.SlareaFrame
+local FrameConfig = require(script.Parent.Config).Interface.Defaults.SlareaFrame
 
 local SlareaFrame: Types.SlareaFrameProto = {} :: Types.SlareaFrameProto
 SlareaFrame.__index = SlareaFrame
 
 
-function SlareaFrame.new(frameId: number)
+function SlareaFrame.new(name: string, screenGui: ScreenGui)
 	local self = {
-		_frame = Instance.new("Frame"), 
-		_frameId = frameId,
+		Frame = Instance.new("Frame"), 
 		
+		_name = name,
 		_plots = {},
-		
 	}
 	
-	self._frame.Name = "slareaFrame"..tostring(frameId)
-	-- size of SlareaFrame is based on accomodating the elements inside of the plot aswell as the padding and things like that
-	self._frame.AnchorPoint = FrameConfig.Frame.AnchorPoint
-	self._frame.Position = FrameConfig.Frame.Position
+	self.Frame.Name = "SlareaFrame"..name
+	self.Frame.AnchorPoint = FrameConfig.Frame.AnchorPoint
+	self.Frame.Position = FrameConfig.Frame.Position
+	
+	self.Frame.Parent = screenGui
 	
 	return setmetatable(self, SlareaFrame)
 end
 
-function SlareaFrame:Mount(screenGui: ScreenGui)
-	self._frame.Parent = screenGui
-end
-
-function SlareaFrame:_accommodate() -- resize frame to make room for its constituents + padding
+function SlareaFrame:AddPlot(plot: Types.LinePlot)
+	table.insert(self._plots, plot)
 	
+	plot.Frame.Parent = self.Frame
+	
+	self:_accommodate()
 end
 
-
-
-
-
+function SlareaFrame:_accommodate() -- resize frame to make room for its constituents + padding	
+	for i,plot in pairs(self._plots) do
+		self.Frame.Size = UDim2.fromOffset(
+			math.max(self.Frame.AbsoluteSize.X, plot.Frame.AbsoluteSize.X + FrameConfig.Plots.Padding.X),
+			math.max(self.Frame.AbsoluteSize.Y, plot.Frame.AbsoluteSize.Y + FrameConfig.Plots.Padding.Y) 
+		)
+	end
+end
 
 return SlareaFrame
