@@ -23,17 +23,14 @@ local frames: {[string]: Types.SlareaFrame} = {}
 
 function SlareaInterface.CreateProbeOutput(probeName: string)
 	local probeFrame = SlareaFrame.new(probeName, screenGui)
-	local probePlot = LinePlot.new()
+	local probePlot = LinePlot.new(probeFrame)
 	
 	probeFrame:AddPlot(probePlot)
 	
 	frames[probeName] = probeFrame
 	
 	return function(data)
-		local plotData: {Vector2} = {}
-		
-		print("RUNNING")
-		
+		local plotData: {Vector2} = {}		
 
 		for i,v in ipairs(data) do
 			table.insert(plotData, Vector2.new(v.timestamp, v.data))
