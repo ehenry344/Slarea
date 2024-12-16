@@ -8,6 +8,9 @@ local Types = require(script.Parent.Types)
 -- // Config //
 local FrameConfig = require(script.Parent.Config).Interface.Defaults.SlareaFrame
 
+-- Utility //
+local InterfaceUtil = require(script.Parent.Utility)
+
 local SlareaFrame: Types.SlareaFrameProto = {} :: Types.SlareaFrameProto
 SlareaFrame.__index = SlareaFrame
 
@@ -15,33 +18,45 @@ SlareaFrame.__index = SlareaFrame
 function SlareaFrame.new(name: string, screenGui: ScreenGui)
 	local self = {
 		Frame = Instance.new("Frame"), 
-		
+	
 		_name = name,
+		
+		_plotFrame = nil,
 		_plots = {},
+		
+		-- hold the plotframe in here, since the plots are just things that get added and put points on the frame they are given
 	}
 	
-	self.Frame.Name = "SlareaFrame"..name
-	self.Frame.AnchorPoint = FrameConfig.Frame.AnchorPoint
-	self.Frame.Position = FrameConfig.Frame.Position
+	InterfaceUtil.ApplyProps(self.Frame, FrameConfig.Frame)
 	
+	self.Frame.Name = "SlareaFrame"..name
 	self.Frame.Parent = screenGui
 	
 	return setmetatable(self, SlareaFrame)
 end
 
+function SlareaFrame:GetPlotFrame()
+	if not self._plotFrame then
+		self._plotFrame = Instance.new("Frame")
+		self._plotFrame.Parent = self.Frame
+	end
+	
+	return self._plotFrame :: Frame
+end
+
 function SlareaFrame:AddPlot(plot: Types.LinePlot)
 	table.insert(self._plots, plot)
-	
-	plot.Frame.Parent = self.Frame
-	
+		
 	self:_accommodate()
 end
 
 function SlareaFrame:_accommodate() -- resize frame to make room for its constituents + padding	
-	for i,plot in pairs(self._plots) do
+	for i,v in pairs(self._plots) do
+		local plotSize = v:GetSize()
+		
 		self.Frame.Size = UDim2.fromOffset(
-			math.max(self.Frame.AbsoluteSize.X, plot.Frame.AbsoluteSize.X + FrameConfig.Plots.Padding.X),
-			math.max(self.Frame.AbsoluteSize.Y, plot.Frame.AbsoluteSize.Y + FrameConfig.Plots.Padding.Y) 
+			math.max(self.Frame.AbsoluteSize.X, plotSize.X + FrameConfig.Plots.Margin.X),
+			math.max(self.Frame.AbsoluteSize.Y, plotSize.Y, FrameConfig.Plots.Margin.Y)
 		)
 	end
 end
