@@ -6,8 +6,7 @@ export type SlareaFrameProto = {
 	__index: SlareaFrameProto,
 
 	new: (name: string, screenGui: ScreenGui) -> SlareaFrame,
-	AddPlot: (SlareaFrame, LinePlot) -> (),
-	GetPlotFrame: (SlareaFrame) -> Frame,
+	AddPlot: (SlareaFrame, Plot) -> (),
 	
 	_accommodate: (SlareaFrame) -> ()
 }
@@ -16,7 +15,7 @@ export type SlareaFrame = typeof(setmetatable({} :: {
 	Frame: Frame,
 	
 	_plotFrame: Frame?,
-	_plots: {LinePlot}
+	_plots: {Plot}
 }, {} :: SlareaFrameProto))
 
 -- Other types
@@ -47,21 +46,65 @@ export type LinePlot = typeof(setmetatable({} :: {
 	Parent: SlareaFrame,
 	Frame: Frame,
 	
-	_points: {Frame},
-	_lines: {Frame},
-	
-	_axis: {
+	Axis: {
 		X: Axis,
 		Y: Axis
 	},
 	
-	_frameBounds: BoxSpacing,
-	_padding: BoxSpacing
+	_points: {Frame},
+	_lines: {Frame},
+	
+	_mins: {
+		X: number,
+		Y: number
+	},
+	
+	_dists: {
+		X: number, 
+		Y: number
+	}
 }, {} :: LinePlotProto))
+
+-- Line Plot Without Points! (for testing)
+
+export type LinePlotNpProto = {
+	__index: LinePlotNpProto,
+
+	new: (SlareaFrame)->LinePlotNp,
+	PlotData: (LinePlotNp, {Vector2})->(),
+	GetSize: (LinePlotNp) -> Vector2,
+
+	_makeLine: (LinePlotNp, number, Vector2, Vector2) -> (),
+	_getFrame: (LinePlotNp, number) -> Frame,
+	_reserve: (LinePlotNp, number) -> ()
+}
+
+export type LinePlotNp = typeof(setmetatable({} :: {
+	Parent: SlareaFrame,
+	Frame: Frame,
+	
+	Axis: {
+		X: Axis,
+		Y: Axis
+	},
+	
+	LowerBound: {
+		X: number,
+		Y: number
+	},
+	
+	PlotScale: {
+		X: number,
+		Y: number,
+	},
+
+	_deployedFrames: {Frame},
+	_reserveFrames: {Frame}
+}, {} :: LinePlotNpProto))
 
 -- General Plot Type
 
-export type Plot = LinePlot
+export type Plot = LinePlotNp
 
 -- Frame Element Types
 
@@ -70,9 +113,11 @@ export type Plot = LinePlot
 export type AxisProto = {
 	__index: AxisProto,
 	
-	new: (Plot, AxisOrientation, number, BoxSpacing)->Axis,	
-	UpdateTicks: (Axis, number, number, number, number)->(),
+	new: (Plot, AxisOrientation, number)->Axis,	
+	UpdateTicks: (Axis, number, number)->(),
 	
+	_setupHorizontal: (Axis)->(),
+	_setupVertical: (Axis)->(),
 }
 
 export type Axis = typeof(setmetatable({} :: {
@@ -80,6 +125,8 @@ export type Axis = typeof(setmetatable({} :: {
 	Frame: Frame,
 	
 	_ticks: {Frame},	
+	_tickLabels: {TextLabel},
+	_gridLines: {Frame},
 	
 	_orientation: AxisOrientation,
 	_numTicks: number,
