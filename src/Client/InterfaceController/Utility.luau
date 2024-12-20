@@ -7,6 +7,8 @@ function InterfaceUtil.GetBounds(t: {Vector2}): (number, number, number, number)
 	
 	local v1 = t[1]
 	local xMin, xMax, yMin, yMax = t[1].X, t[1].X, t[1].Y, t[1].Y
+	
+	
 		
 	for i, v: Vector2 in pairs(t) do
 		xMin = math.min(xMin, v.X)
@@ -18,10 +20,5 @@ function InterfaceUtil.GetBounds(t: {Vector2}): (number, number, number, number)
 	return xMin, xMax, yMin, yMax
 end
 
-function InterfaceUtil.ApplyProps(guiObject: GuiObject, props: {[string]: any})
-	for i,v in pairs(props) do 
-		guiObject[i] = v
-	end
-end
 
 return InterfaceUtil
