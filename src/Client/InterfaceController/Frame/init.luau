@@ -26,25 +26,26 @@ function SlareaFrame.new(name: string, screenGui: ScreenGui)
 		
 		-- hold the plotframe in here, since the plots are just things that get added and put points on the frame they are given
 	}
-	
-	InterfaceUtil.ApplyProps(self.Frame, FrameConfig.Frame)
-	
+		
+	self.Frame.AnchorPoint = FrameConfig.Frame.AnchorPoint
+	self.Frame.Position = FrameConfig.Frame.Position
+	self.Frame.BorderSizePixel = FrameConfig.Frame.BorderSizePixel
+	self.Frame.BackgroundTransparency = FrameConfig.Frame.BackgroundTransparency
 	self.Frame.Name = "SlareaFrame"..name
+	
 	self.Frame.Parent = screenGui
 	
+	-- make it draggable
+	
+	local dragDetector = Instance.new("UIDragDetector")
+	dragDetector.BoundingBehavior = Enum.UIDragDetectorBoundingBehavior.EntireObject
+	dragDetector.BoundingUI = screenGui
+	dragDetector.Parent = self.Frame
+
 	return setmetatable(self, SlareaFrame)
 end
 
-function SlareaFrame:GetPlotFrame()
-	if not self._plotFrame then
-		self._plotFrame = Instance.new("Frame")
-		self._plotFrame.Parent = self.Frame
-	end
-	
-	return self._plotFrame :: Frame
-end
-
-function SlareaFrame:AddPlot(plot: Types.LinePlot)
+function SlareaFrame:AddPlot(plot: Types.Plot)
 	table.insert(self._plots, plot)
 		
 	self:_accommodate()
