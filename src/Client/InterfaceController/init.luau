@@ -7,7 +7,6 @@ local PlayerService = game:GetService("Players")
 -- // Modules // 
 local SlareaFrame = require(script.Frame)
 local LinePlot = require(script.Frame.Plots.LinePlot)
-local LinePlotNp = require(script.Frame.Plots.LinePlotNoPoints)
 
 local SlareaInterface = {}
 
@@ -25,7 +24,7 @@ local frames: {[string]: Types.SlareaFrame} = {}
 
 function SlareaInterface.CreateProbeOutput(probeName: string)
 	local probeFrame = SlareaFrame.new(probeName, screenGui)
-	local probePlot = LinePlotNp.new(probeFrame)
+	local probePlot = LinePlot.new(probeFrame, probeName)
 	
 	probeFrame:AddPlot(probePlot)
 	
