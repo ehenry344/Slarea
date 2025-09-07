@@ -13,8 +13,7 @@ local registry = {
 	probes = {}
 }
 
--- build the remote event for the library
-
+-- setup downlink Remote
 local SlareaRemote = Instance.new("RemoteEvent")
 
 SlareaRemote.Name = "SlareaEngineLink"
@@ -23,10 +22,10 @@ SlareaRemote.Parent = ReplicatedStorage
 local ServerPipe = SlareaServerPipe.new("ServerPipe", SlareaRemote)
 
 ServerPipe:SetupDownLink(function(player: Player, data)
-	if data.packet_type == "SetupLink" then
-		print("Poked by " .. player.UserId)
+	if data.packet_type == "SetupLink" then		
 		
 		for name, probe in pairs(registry.probes) do
+			
 			ServerPipe:TransmitProbeRegistration({
 				packet_type = "RegisterProbe",
 				payload = {
@@ -35,12 +34,15 @@ ServerPipe:SetupDownLink(function(player: Player, data)
 				}
 			})
 		end	
+		
 	end
 end)
 
 function ServerMonitor.RegisterProbe(name: string)
 	if not registry.probes[name] then
-		registry.probes[name] = SlareaServerProbe.new(name, ServerPipe)
+		registry.probes[name] = SlareaServerProbe.new(name, ServerPipe, {
+			cooldown = 0.5
+		})
 		
 		-- inform authorized clients of the probe
 				
