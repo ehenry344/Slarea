@@ -44,7 +44,7 @@ function Axis:_setupHorizontal() -- setup x axis
 	local ticks = self._numTicks - 1
 	
 	self.Frame.Size = UDim2.fromOffset(self.Parent.Frame.AbsoluteSize.X, AxisConfig.Size.Height)
-	self.Frame.Position = UDim2.fromOffset(self.Parent.Frame.Position.X.Offset, self.Parent.Frame.AbsoluteSize.Y)
+	self.Frame.Position = UDim2.fromOffset(self.Parent.Frame.Position.X.Offset, self.Parent.Frame.AbsoluteSize.Y + self.Parent.Frame.Position.Y.Offset) 
 	self.Frame.Name = "XAxis"
 
 	-- make templates
@@ -102,7 +102,7 @@ function Axis:_setupHorizontal() -- setup x axis
 
 		gridLine.Name = "XGridLine"..instanceNumber
 		gridLine.Position = UDim2.fromScale(xPosScale, 0)
-		gridLine.Parent = self.Parent.Frame
+		gridLine.Parent = self.Parent.GridLineFrame
 
 		table.insert(self._gridLines, gridLine)
 	end
@@ -161,7 +161,7 @@ function Axis:_setupVertical() -- setup the y axis
 
 		gridLine.Name = "YGridLine"..instanceNumber
 		gridLine.Position = UDim2.fromScale(0, 1 - yPosScale)
-		gridLine.Parent = self.Parent.Frame
+		gridLine.Parent = self.Parent.GridLineFrame
 
 		table.insert(self._gridLines, gridLine)
 	end
