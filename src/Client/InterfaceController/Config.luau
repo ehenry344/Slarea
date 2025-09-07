@@ -9,7 +9,7 @@ return table.freeze({
 					BackgroundTransparency = 1,
 				},
 				Plots = {
-					Margin = Vector2.new(50, 50)
+					Margin = Vector2.new(0, 0)
 				}
 			},
 			
@@ -69,18 +69,9 @@ return table.freeze({
 			},
 			
 			PlotComponents = {
-				Point = {
-					Frame = {
-						Size = UDim2.fromOffset(3, 3),
-						BackgroundColor3 = Color3.fromRGB(0, 170, 255),
-						BorderSizePixel = 0 
-					}
-				},
 				Line = {
-					Frame = {
-						BackgroundColor3 = Color3.fromRGB(0, 170, 255),
-						BorderSizePixel = 0
-					},
+					BackgroundColor3 = Color3.fromRGB(0, 170, 255),
+					BorderSizePixel = 0
 				},
 			}
 		}
