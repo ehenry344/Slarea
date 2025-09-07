@@ -33,60 +33,24 @@ export type BoxSpacing = {
 
 export type LinePlotProto = {
 	__index: LinePlotProto,
-	
-	new: (SlareaFrame)->LinePlot,
+
+	new: (SlareaFrame, string?)->LinePlot,
 	PlotData: (LinePlot, {Vector2})->(),
-	ClearPlot: (LinePlot) -> (),
 	GetSize: (LinePlot) -> Vector2,
-	
-	_makeLine: (LinePlot, number, Frame, Frame) -> (),
 }
 
 export type LinePlot = typeof(setmetatable({} :: {
 	Parent: SlareaFrame,
 	Frame: Frame,
+	GridLineFrame: Frame,
+	Path2D: Path2D,
 	
 	Axis: {
 		X: Axis,
 		Y: Axis
 	},
 	
-	_points: {Frame},
-	_lines: {Frame},
-	
-	_mins: {
-		X: number,
-		Y: number
-	},
-	
-	_dists: {
-		X: number, 
-		Y: number
-	}
-}, {} :: LinePlotProto))
-
--- Line Plot Without Points! (for testing)
-
-export type LinePlotNpProto = {
-	__index: LinePlotNpProto,
-
-	new: (SlareaFrame)->LinePlotNp,
-	PlotData: (LinePlotNp, {Vector2})->(),
-	GetSize: (LinePlotNp) -> Vector2,
-
-	_makeLine: (LinePlotNp, number, Vector2, Vector2) -> (),
-	_getFrame: (LinePlotNp, number) -> Frame,
-	_reserve: (LinePlotNp, number) -> ()
-}
-
-export type LinePlotNp = typeof(setmetatable({} :: {
-	Parent: SlareaFrame,
-	Frame: Frame,
-	
-	Axis: {
-		X: Axis,
-		Y: Axis
-	},
+	Header: Label?,
 	
 	LowerBound: {
 		X: number,
@@ -95,16 +59,13 @@ export type LinePlotNp = typeof(setmetatable({} :: {
 	
 	PlotScale: {
 		X: number,
-		Y: number,
-	},
-
-	_deployedFrames: {Frame},
-	_reserveFrames: {Frame}
-}, {} :: LinePlotNpProto))
+		Y: number
+	}
+}, {} :: LinePlotProto))
 
 -- General Plot Type
 
-export type Plot = LinePlotNp
+export type Plot = LinePlot
 
 -- Frame Element Types
 
@@ -133,5 +94,22 @@ export type Axis = typeof(setmetatable({} :: {
 }, {} :: AxisProto)) 
 
 export type AxisOrientation = "Horizontal" | "Vertical"
+
+-- Label
+
+export type LabelProto = {
+	__index: LabelProto,
+	
+	newPlotLabel: (parent: Plot, text: string)->Label,
+	newAxisLabel: (parent: Axis, text: string)->Label,
+	
+	GetSize: (Label) -> Vector2,
+}
+
+export type Label = typeof(setmetatable({} :: {
+	Parent: Plot | Axis,
+	
+	_textLabel: TextLabel
+}, {} :: LabelProto))
 
 return nil
