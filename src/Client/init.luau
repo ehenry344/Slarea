@@ -53,7 +53,7 @@ SlareaLink.OnClientEvent:Connect(function(data)
 		end
 	elseif data.packet_type == "DataPacket" then
 		local stream = registry.serverStreams[data.payload.probename]
-		
+				
 		if stream then
 			stream:WriteData({data = data.payload.data, timestamp = data.payload.timestamp})
 		end
